@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="myCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
+<script>
+
+// Canvas-element en de 2D-rendercontext
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+
+// Lijn tekenen met het Bresenham-algoritme
+function plotLine(x1, y1, x2, y2) {
+    var dx = Math.abs(x2 - x1); // Verschil in x-richting
+    var sx = x1 < x2 ? 1 : -1; // Bepaal de richting van x
+    var dy = -Math.abs(y2 - y1); // Verschil in y-richting
+    var sy = y1 < y2 ? 1 : -1; // Bepaal de richting van y
+    var err = dx + dy; // Foutmarge om te bepalen wanneer de lijn van richting verandert
+    var e2; // Hulpfoutmarge
+
+    while (true) { // Blijf tekenen tot het eindpunt bereikt is
+        ctx.fillRect(x1, y1, 1, 1); // Teken een 1x1 vierkant (pixel)
+        if (x1 === x2 && y1 === y2) break; // Stop als we bij het eindpunt zijn
+        e2 = 2 * err; // Dubbele foutmarge berekenen
+        if (e2 >= dy) { err += dy; x1 += sx; } // Beweeg in de x-richting
+        if (e2 <= dx) { err += dx; y1 += sy; } // Beweeg in de y-richting
+    }
+}
+
+// Definieer de punten van de ster
+var sterPunten = [
+    {x: 200, y: 50},  // Top van de ster
+    {x: 150, y: 150}, // Linksboven
+    {x: 50, y: 150},  // Links
+    {x: 125, y: 225}, // Linksonder
+    {x: 75, y: 325},  // Onder links
+    {x: 200, y: 275}, // Onderste punt
+    {x: 325, y: 325}, // Onder rechts
+    {x: 275, y: 225}, // Rechtsonder
+    {x: 350, y: 150}, // Rechts
+    {x: 250, y: 150}, // Rechtsboven
+    {x: 200, y: 50}   // Sluit de ster
+];
+
+// Teken de ster door lijnen tussen de punten te trekken
+for (var i = 0; i < sterPunten.length - 1; i++) {
+    plotLine(sterPunten[i].x, sterPunten[i].y, sterPunten[i+1].x, sterPunten[i+1].y);
+}
+
+</script>
+</body>
+</html>

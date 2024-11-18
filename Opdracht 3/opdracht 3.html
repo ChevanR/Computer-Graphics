@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Opdracht 3</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cubeCanvas" width="800" height="800"></canvas>
+    <script>
+        const canvas = document.getElementById('cubeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const vertices = [
+            [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+            [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
+        ];
+
+        const edges = [
+            [0, 1], [1, 2], [2, 3], [3, 0],
+            [4, 5], [5, 6], [6, 7], [7, 4],
+            [0, 4], [1, 5], [2, 6], [3, 7]
+        ];
+
+        let angle = 0;
+
+        // Rotatiematrix voor de Y-as genereren
+        function rotationYMatrix(theta) {
+            return math.matrix([
+                [Math.cos(theta), 0, Math.sin(theta)],
+                [0, 1, 0],
+                [-Math.sin(theta), 0, Math.cos(theta)]
+            ]);
+        }
+
+        // Translatie matrix genereren
+        function translationMatrix() {
+            return math.matrix([
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 1]
+            ]);
+        }
+
+        // Schalingsmatrix genereren
+        function scalingMatrix() {
+            const scale = 1.5; // Uniform scaling factor
+            return math.matrix([
+                [scale, 0, 0],
+                [0, scale, 0],
+                [0, 0, scale]
+            ]);
+        }
+
+        // Projectiefunctie die perspectiefprojectie gebruikt
+        function project(vertex) {
+            const zOffset = 5; // Plaats z verder weg van de camera
+            const scale = 400 / (zOffset + vertex[2]); // Pas de schaal aan op basis van z
+            return [
+                vertex[0] * scale + canvas.width / 2,
+                vertex[1] * scale + canvas.height / 2
+            ];
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Combineer rotatie, schaling en translatie tot één matrix
+            const transformationMatrix = math.multiply(rotationYMatrix(angle), scalingMatrix(), translationMatrix());
+
+            // Pas transformatiematrix toe op elk punt
+            const transformedVertices = vertices.map(v => {
+                const vertexAsMatrix = math.matrix([v]);
+                const transformed = math.multiply(transformationMatrix, vertexAsMatrix.reshape([3, 1]));
+                return transformed.toArray().map(x => x[0]);
+            });
+
+            // Projecteer de punten naar 2D
+            const projectedVertices = transformedVertices.map(v => project(v));
+
+            // Teken elk edge van de kubus
+            edges.forEach(edge => {
+                const start = projectedVertices[edge[0]];
+                const end = projectedVertices[edge[1]];
+                ctx.beginPath();
+                ctx.moveTo(start[0], start[1]);
+                ctx.lineTo(end[0], end[1]);
+                ctx.stroke();
+            });
+
+            angle += 0.02; // Verhoog de rotatiehoek voor animatie
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
