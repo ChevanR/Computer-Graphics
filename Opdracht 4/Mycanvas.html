@@ -8,10 +8,10 @@
     <!-- Canvas where the cube will be drawn -->
     <canvas id="myCanvas" width="640" height="480"></canvas>
     <script type="text/javascript">
-        // -------------------- Constants --------------------
+        //  Constants 
         const ROTATION_SPEED = -1; // Radians per second
 
-        // -------------------- Global Variables --------------------
+        //  Global Variables 
         var gl;
         var program;
         var startTime;
@@ -36,7 +36,7 @@
         var diffuseIntensityLocation;
         var specularIntensityLocation;
 
-        // -------------------- Initialization --------------------
+        //  Initialization 
         window.onload = function() {
             initializeWebGL();
             initializeShaders();
@@ -49,7 +49,7 @@
             requestAnimationFrame(drawLoop);
         };
 
-        // -------------------- WebGL Initialization --------------------
+        //  WebGL Initialization 
         function initializeWebGL() {
             var canvas = document.getElementById("myCanvas");
             gl = canvas.getContext("webgl2");
@@ -67,7 +67,7 @@
             ); // Make viewport square and centered
         }
 
-        // -------------------- Shader Initialization --------------------
+        //  Shader Initialization 
         function initializeShaders() {
             // Vertex Shader
             let vsSource = `#version 300 es
@@ -141,7 +141,7 @@
             gl.useProgram(program);
         }
 
-        // -------------------- Shader Compilation --------------------
+        //  Shader Compilation 
         function compileShader(type, source) {
             let shader = gl.createShader(type);
             gl.shaderSource(shader, source);
@@ -155,7 +155,7 @@
             return shader;
         }
 
-        // -------------------- Buffer Initialization --------------------
+        //  Buffer Initialization 
         function initializeBuffers() {
             // Define the vertices for the cube
             let vertices = new Float32Array([
@@ -243,7 +243,7 @@
             gl.enableVertexAttribArray(colLocation);
         }
 
-        // -------------------- Texture Initialization --------------------
+        //  Texture Initialization 
         function initializeTexture() {
             // Create and bind texture
             let texture = gl.createTexture();
@@ -281,7 +281,7 @@
             gl.uniform1i(textureLocation, 0); // Texture unit 0
         }
 
-        // -------------------- Matrix Initialization --------------------
+        //  Matrix Initialization 
         function initializeMatrices() {
             // Projection matrix
             projectionLocation = gl.getUniformLocation(program, "projection");
@@ -315,13 +315,13 @@
             ]);
             gl.uniformMatrix4fv(fixedRotationLocation, false, fixedRotation);
 
-            // **Added: Initialize rotationAngleLocation**
+            // Initialize rotationAngleLocation
             rotationAngleLocation = gl.getUniformLocation(program, "rotationAngle");
             // Initialize with 0 rotation
             gl.uniform1f(rotationAngleLocation, 0.0);
         }
 
-        // -------------------- Lighting Initialization --------------------
+        //  Lighting Initialization 
         function initializeLighting() {
             // Get uniform locations
             lightPosLocation = gl.getUniformLocation(program, "lightPos");
@@ -336,7 +336,7 @@
             gl.uniform1f(specularIntensityLocation, specularIntensity);
         }
 
-        // -------------------- Event Initialization --------------------
+        //  Event Initialization 
         function initializeEvents() {
             var canvas = document.getElementById("myCanvas");
 
@@ -379,7 +379,7 @@
             });
         }
 
-        // -------------------- Drawing Functions --------------------
+        //  Drawing Functions 
         function drawCube(angle) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.uniform1f(rotationAngleLocation, angle);
