@@ -88,7 +88,7 @@
                 vec3 viewingDirection = normalize(fragPos);
                 float ambient = ambientIntensity;
                 float diffuse = diffuseIntensity * max(0.0, dot(normalizedNormal, reverseLightDirection));
-                float specular = specularIntensity * pow(max(0.0, dot(viewingDirection, reflectedDirection)), 60.0);
+                float specular = specularIntensity * pow(max(0.0, dot(viewingDirection, reflectedDirection)), 20.0);
                 fragColor = texture(aTexture, texCoord) * vec4(color, 1.0);
                 fragColor.rgb *= (ambient + diffuse + specular);
             }`;
@@ -281,7 +281,15 @@ canvas.addEventListener("mousemove", function (event) {
     gl.uniform3fv(lightPosLocation, lightPosition);
 });
 
-        setInterval(draw, 50); // 20 frames per second
+        function drawLoop() {
+        let angle = ROTATION_SPEED * 0.001 * (Date.now() - startTime); // Calculate rotation angle
+        drawCube(angle); // Draw the cube
+        requestAnimationFrame(drawLoop); // Schedule the next frame
+    }
+
+    // Start the new animation loop
+    requestAnimationFrame(drawLoop);
+
 
         // Add keyboard event listener
 document.addEventListener("keydown", function (event) {
